@@ -1,79 +1,95 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Phone, MapPin, ChevronDown, Search } from "lucide-react";
+import { Search, User, MoreVertical, Headset, Store, Truck } from "lucide-react";
 import CategorySidebar from "./CategorySidebar";
 
 export default function Navbar() {
+  const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
+
   return (
-    <header className="w-full shadow-sm">
-      {/* 1. TOP UTILITY BAR - Premium Dark Look */}
-      <div className="bg-dark text-slate-300 text-[12px] py-1.5 border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center font-sans">
-          <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5 hover:text-white cursor-pointer transition-all">
-              <Phone className="w-3.5 h-3.5 text-primary" /> <span className="font-bold">16444</span>
-            </span>
-            <span className="hidden sm:flex items-center gap-1.5 border-l border-slate-600 pl-6">
-              <MapPin className="w-3.5 h-3.5 text-primary" /> Delivery to: <span className="text-white font-medium">Dhaka, Bangladesh</span>
-            </span>
-          </div>
-          <div className="flex items-center gap-5">
-            <button className="hover:text-primary">Track Order</button>
-            <button className="flex items-center gap-1 border-l border-slate-600 pl-5 hover:text-white">
-              English <ChevronDown className="w-3 h-3" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. MAIN NAV - Chaldal/Shwapno Inspired */}
-      <nav className="bg-white sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4 md:gap-10">
-          {/* Brand */}
-          <Link href="/" className="font-heading text-3xl font-extrabold italic flex-shrink-0">
-            Amar<span className="text-primary">Dokan</span>
-          </Link>
-
-          {/* Search Box - Rounded Pill Style */}
-          <div className="hidden md:flex flex-grow relative group">
-            <input 
-              type="text" 
-              placeholder="What are you looking for today?" 
-              className="w-full bg-slate-50 border border-slate-200 rounded-full py-3 px-6 pr-14 focus:bg-white focus:ring-2 focus:ring-emerald-100 focus:border-primary outline-none transition-all text-sm"
-            />
-            <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary p-2.5 rounded-full text-white hover:bg-emerald-600 transition-all shadow-md">
-              <Search className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* User Actions */}
-          <div className="flex items-center gap-3 sm:gap-6">
-            <button className="hidden sm:block text-slate-700 font-bold hover:text-primary transition-all">Login</button>
-            <div className="hidden sm:block h-5 w-[1px] bg-slate-200"></div>
-            
-            <Link href="/cart" className="relative p-2.5 bg-emerald-50 rounded-full text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
-              <ShoppingCart className="w-6 h-6" />
-              <span className="absolute -top-1 -right-1 bg-secondary text-white text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-white">
-                0
-              </span>
+    <header className="w-full font-sans sticky top-0 z-50 shadow-sm">
+      <div className="bg-primary py-2 px-3 md:px-4">
+        <div className="max-w-[1400px] mx-auto flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
+            <div className="md:hidden">
+              <CategorySidebar /> 
+            </div>
+            <Link href="/" className="flex-shrink-0">
+              <h1 className="text-white text-lg md:text-3xl font-black italic tracking-tighter leading-none">
+                Amar<span className="text-yellow-400">Dokan</span>
+              </h1>
             </Link>
           </div>
-        </div>
+          <div className="hidden lg:flex items-center gap-2 text-white border border-white/60 bg-white/5 px-3 py-1.5 rounded-md cursor-pointer hover:bg-white/10 transition-all flex-shrink-0">
+            <Truck  className="w-6 h-6 text-yellow-branding" />
+            <div className="flex flex-col">
+              <span className="text-[10px] leading-tight opacity-80 uppercase font-bold tracking-wider">Deliver to</span>
+              <span className="text-[12px] leading-tight font-black whitespace-nowrap">Select Location</span>
+            </div>
+          </div>
+          <div className="flex-grow flex mx-auto items-center  min-w-[120px] md:max-w-md ml-auto">
+            <input 
+              type="text" 
+              placeholder="Search..." 
+              className="w-full bg-white py-1.5 md:py-2.5 px-3 rounded-l-md outline-none text-[11px] md:text-sm"
+            />
+            <button className="bg-yellow-branding p-1.5 md:px-4 md:py-2.5 rounded-r-md flex-shrink-0">
+              <Search className="w-4 h-4 md:w-5 md:h-5 text-dark" />
+            </button>
+          </div>
+          <div className="flex items-center gap-1 md:gap-4 text-white flex-shrink-0">
+            <div className="hidden md:flex items-center gap-4">
+               <button className="text-sm font-bold border border-white/70 px-3 py-2 rounded hover:bg-white/10 uppercase">বাংলা</button>
+               <button className="bg-white text-dark hover:rounded-full hover:cursor-pointer font-bold px-4 py-2 rounded flex items-center gap-2 text-sm shadow-sm">
+                  <User className="w-5 h-5 text-primary" /> Sign in
+               </button>
+            </div>
+            <div className="md:hidden flex items-center gap-1">
+              <button className="p-1">
+                <User className="w-5 h-5" />
+              </button>
+              <div className="relative">
+                <button onClick={() => setIsActionMenuOpen(!isActionMenuOpen)} className="p-1">
+                  <MoreVertical className="w-5 h-5" />
+                </button>
 
-        {/* 3. SUB NAV - Category List */}
-        <div className="bg-white border-t border-slate-50 py-2.5 overflow-x-auto no-scrollbar">
-          <div className="max-w-7xl mx-auto px-4 flex items-center gap-10 text-[13px] font-bold text-slate-500">
-            <CategorySidebar />
-            
-            <div className="flex items-center gap-8">
-              <Link href="#" className="hover:text-primary transition-colors whitespace-nowrap">Flash Sales</Link>
-              <Link href="#" className="hover:text-primary transition-colors whitespace-nowrap">New Arrivals</Link>
-              <Link href="#" className="hover:text-primary transition-colors whitespace-nowrap">Offers</Link>
-              <Link href="#" className="hover:text-primary transition-colors whitespace-nowrap text-secondary italic">Special Deals ✨</Link>
+                {isActionMenuOpen && (
+                  <div className="absolute top-10 right-0 bg-white shadow-2xl rounded-lg py-2 w-48 text-dark border border-slate-100 z-[100] animate-in fade-in zoom-in duration-200">
+                    <button className="lg:hidden w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 text-sm font-bold text-left border-b">
+                      <Truck className="w-4 h-4 text-yellow-600" /> 
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-slate-500 uppercase">Deliver to</span>
+                        <span className="text-slate-800">Select Location</span>
+                      </div>
+                    </button>
+                    <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 text-sm font-semibold text-left text-slate-700">
+                      <Headset className="w-4 h-4 text-primary" /> Helpline
+                    </button>
+                    <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 text-sm font-semibold border-t text-left text-slate-700 text-primary">
+                      <Store className="w-4 h-4" /> Our Outlets
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div className="hidden md:block bg-white border-b py-2 px-4">
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between text-[12px] font-bold text-slate-700">
+          <div className="flex items-center gap-10">
+            <CategorySidebar /> 
+            <div className="flex items-center gap-6 uppercase tracking-tight">
+              <Link href="#" className="hover:text-primary transition-colors">Ramadan Special</Link>
+              <Link href="#" className="hover:text-primary transition-colors">Great Deals</Link>
+              <Link href="#" className="hover:text-primary transition-colors">Stock & Save</Link>
+              <Link href="#" className="hover:text-primary transition-colors">Our Outlets</Link>
             </div>
           </div>
         </div>
-      </nav>
+      </div>
     </header>
   );
 }
