@@ -1,12 +1,11 @@
-import Image from "next/image";
+import Hero from "@/components/Hero";
+import QuickCategories from "@/components/QuickCategories";
 
 export default function Home() {
   return (
-    <div>
-      <h2>
-        hello wellcome home
-      </h2>
-
-  </div>
+    <main className="min-h-screen bg-[#f3f4f6]">
+      {/* <Hero /> */}
+      <QuickCategories />
+    </main>
   );
 }

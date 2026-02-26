@@ -2,7 +2,8 @@
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { 
   Menu, Apple, Baby, Brush, 
-  Sparkles, Shirt, Home, PenTool, ToyBrick, Smartphone, UtensilsCrossed, ChevronRight 
+  Sparkles, Shirt, Home, PenTool, ToyBrick, Smartphone, UtensilsCrossed, ChevronRight, 
+  Phone
 } from "lucide-react";
 import Link from "next/link";
 
@@ -25,12 +26,9 @@ export default function CategorySidebar() {
     <Sheet>
       <SheetTrigger asChild>
         <button className="flex items-center gap-2 cursor-pointer outline-none group">
-          {/* Mobile Trigger: Navbar-er uporero bar-er jonno */}
           <div className="md:hidden flex items-center justify-center text-white">
             <Menu className="w-7 h-7" />
           </div>
-          
-          {/* Desktop Trigger: Navbar-er nicer bar-er jonno */}
           <div className="hidden md:flex items-center gap-2 text-slate-800">
             <Menu className="w-5 h-5 group-hover:text-primary transition-colors" />
             <span className="font-bold text-sm uppercase tracking-tight group-hover:text-primary transition-colors">
@@ -41,10 +39,7 @@ export default function CategorySidebar() {
       </SheetTrigger>
       
       <SheetContent side="left" className="w-[85%] sm:w-[350px] p-0 border-none bg-white">
-        {/* Screen readers-er jonno title (visually hidden) */}
         <SheetTitle className="sr-only">Category Navigation</SheetTitle>
-
-        {/* Sidebar Header */}
         <div className="bg-primary p-5 flex items-center gap-3 text-white shadow-md">
           <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center font-black italic shadow-inner border border-white/10">
             A
@@ -56,8 +51,6 @@ export default function CategorySidebar() {
             <span className="text-[10px] font-medium opacity-80 tracking-widest uppercase mt-1">Online Grocery</span>
           </div>
         </div>
-
-        {/* Category List */}
         <div className="py-4 px-2 flex flex-col gap-1 overflow-y-auto h-[calc(100vh-85px)] custom-scrollbar">
           {categories.map((cat, i) => (
             <Link 
@@ -79,8 +72,8 @@ export default function CategorySidebar() {
           <div className="mt-8 p-4 bg-slate-50 rounded-2xl mx-2 border border-dashed border-slate-200 mb-6">
             <p className="text-[11px] text-slate-500 font-bold uppercase mb-2 px-1">Customer Support</p>
             <div className="flex items-center gap-3 text-sm font-black text-slate-700">
-               <div className="p-2 bg-white rounded-full shadow-sm text-lg">📞</div>
-               16444
+               <div className="p-2 bg-white rounded-full shadow-sm "><Phone size={10}></Phone></div>
+               01891883223
             </div>
           </div>
         </div>
