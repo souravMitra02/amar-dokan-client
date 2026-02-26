@@ -3,10 +3,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { Search, User, MoreVertical, Headset, Store, Truck } from "lucide-react";
 import CategorySidebar from "./CategorySidebar";
-
+import AuthModal from "../AuthModal";
+import { useSession } from "next-auth/react";
 export default function Navbar() {
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
-
+const { data: session } = useSession();
   return (
     <header className="w-full font-sans sticky top-0 z-50 shadow-sm">
       <div className="bg-primary py-2 px-3 md:px-4">
@@ -41,9 +42,15 @@ export default function Navbar() {
           <div className="flex items-center gap-1 md:gap-4 text-white flex-shrink-0">
             <div className="hidden md:flex items-center gap-4">
                <button className="text-sm font-bold border border-white/70 px-3 py-2 rounded hover:bg-white/10 uppercase">বাংলা</button>
-               <button className="bg-white text-dark hover:rounded-full hover:cursor-pointer font-bold px-4 py-2 rounded flex items-center gap-2 text-sm shadow-sm">
-                  <User className="w-5 h-5 text-primary" /> Sign in
-               </button>
+              {!session && (
+  <AuthModal 
+    trigger={
+      <button className="bg-white text-dark hover:rounded-full hover:cursor-pointer font-bold px-4 py-2 rounded flex items-center gap-2 text-sm shadow-sm transition-all duration-300">
+        <User className="w-5 h-5 text-primary" /> Sign in
+      </button>
+    } 
+  />
+)}
             </div>
             <div className="md:hidden flex items-center gap-1">
               <button className="p-1">
