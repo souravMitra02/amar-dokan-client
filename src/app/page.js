@@ -1,5 +1,6 @@
 import FlashSale from "@/components/FlashSale";
 import Hero from "@/components/Hero";
+import ProductDisplay from "@/components/ProductList";
 import QuickCategories from "@/components/QuickCategories";
 
 export default function Home() {
@@ -7,7 +8,8 @@ export default function Home() {
     <main className="min-h-screen bg-[#f3f4f6]">
       <Hero />
       <QuickCategories />
-      {/* <FlashSale/> */}
+      <FlashSale />
+      <ProductDisplay/>
     </main>
   );
 }
