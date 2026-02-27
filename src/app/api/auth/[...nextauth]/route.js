@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 const handler = NextAuth({
   providers: [
@@ -7,8 +8,37 @@ const handler = NextAuth({
       clientId: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
     }),
+    CredentialsProvider({
+      name: "Credentials",
+      async authorize(credentials) {
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          });
+
+          const data = await res.json();
+          if (res.ok && data.user) {
+            return {
+              id: data.user.id,
+              name: data.user.name,
+              email: data.user.email,
+              role: data.user.role,
+              accessToken: data.token,
+            };
+          }
+          return null;
+        } catch (error) {
+          return null;
+        }
+      },
+    }),
   ],
-  
+
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
@@ -28,15 +58,12 @@ const handler = NextAuth({
           if (res.ok) {
             const data = await res.json();
             user.accessToken = data.token;
-            user.role = data.role || "user"; 
+            user.role = data.role || "user";
             return true;
-          } else {
-            console.error("Backend login failed with status:", res.status);
-            return false; 
           }
+          return false;
         } catch (error) {
-          console.error("Connection Error to Backend:", error.message);
-          return false; 
+          return false;
         }
       }
       return true;
@@ -46,6 +73,7 @@ const handler = NextAuth({
       if (user) {
         token.accessToken = user.accessToken;
         token.role = user.role;
+        token.name = user.name;
       }
       return token;
     },
@@ -54,15 +82,15 @@ const handler = NextAuth({
       if (session.user) {
         session.user.accessToken = token.accessToken;
         session.user.role = token.role;
+        session.user.name = token.name;
       }
       return session;
     },
   },
-  debug: process.env.NODE_ENV === "development",
-  
+
   pages: {
     signIn: "/",
-    error: "/", 
+    error: "/",
   },
 });
 
