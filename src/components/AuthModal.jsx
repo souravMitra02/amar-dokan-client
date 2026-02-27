@@ -63,7 +63,8 @@ export default function AuthModal({ trigger }) {
           reset();
         }
       } else {
-        const res = await fetch("http://localhost:5000/api/auth/register", { 
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/register` || "http://localhost:5000/api/auth/register";
+        const res = await fetch((apiUrl), { 
   method: "POST",
   headers: { 
     "Content-Type": "application/json" 

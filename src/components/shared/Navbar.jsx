@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, User, MoreVertical, Headset, Store, Truck, ShoppingBag, Heart, MapPin, LogOut, RotateCcw, ChevronDown } from "lucide-react";
+import { Search, User, MoreVertical, Headset, Truck, ShoppingBag, Heart, LogOut, ChevronDown, Loader2, LayoutDashboard } from "lucide-react";
 import CategorySidebar from "./CategorySidebar";
 import AuthModal from "../AuthModal";
 import { useSession, signOut } from "next-auth/react";
@@ -15,7 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// --- Custom Skeleton Loader ---
 const NavbarSkeleton = () => (
   <header className="w-full bg-primary py-3 px-4 shadow-sm">
     <div className="max-w-[1400px] mx-auto flex items-center justify-between animate-pulse">
@@ -29,7 +28,8 @@ const NavbarSkeleton = () => (
 export default function Navbar() {
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
 
   useEffect(() => {
     setMounted(true);
@@ -41,8 +41,6 @@ export default function Navbar() {
     <header className="w-full font-sans sticky top-0 z-50 shadow-sm">
       <div className="bg-primary py-2 px-3 md:px-4">
         <div className="max-w-[1400px] mx-auto flex items-center gap-2 md:gap-4">
-          
-          {/* 1. Logo Section */}
           <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
             <div className="md:hidden">
               <CategorySidebar />
@@ -53,8 +51,6 @@ export default function Navbar() {
               </h1>
             </Link>
           </div>
-
-          {/* 2. Delivery Section (Desktop Only) */}
           <div className="hidden lg:flex items-center gap-2 text-white border border-white/60 bg-white/5 px-3 py-1.5 rounded-md cursor-pointer hover:bg-white/10 flex-shrink-0">
             <Truck className="w-6 h-6 text-yellow-branding" />
             <div className="flex flex-col">
@@ -62,8 +58,6 @@ export default function Navbar() {
               <span className="text-[12px] font-black">Select Location</span>
             </div>
           </div>
-
-          {/* 3. Search Bar */}
           <div className="flex-grow flex mx-auto items-center min-w-[120px] md:max-w-md ml-auto">
             <input
               type="text"
@@ -74,35 +68,47 @@ export default function Navbar() {
               <Search className="w-4 h-4 md:w-5 md:h-5 text-dark" />
             </button>
           </div>
-
-          {/* 4. Action Icons Section */}
           <div className="flex items-center gap-1 md:gap-4 text-white flex-shrink-0">
-            
-            {/* --- DESKTOP VIEW --- */}
             <div className="hidden md:flex items-center gap-4">
               <button className="text-sm font-bold border border-white/70 px-3 py-2 rounded hover:bg-white/10 uppercase">বাংলা</button>
-              {session ? (
+              
+              {status === "loading" ? (
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg animate-pulse">
+                  <Loader2 className="animate-spin w-4 h-4 text-white" />
+                  <span className="text-xs">Checking...</span>
+                </div>
+              ) : session ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="bg-white text-dark font-bold px-4 py-2 rounded-lg flex items-center gap-2 text-sm shadow-sm border border-slate-100 outline-none transition-all hover:bg-slate-50 active:scale-95">
-  <span className="relative flex h-2.5 w-2.5">
-    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-
-    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
-  </span>
-  <span className="max-w-[80px] truncate tracking-tight">
-    {session.user.name.split(" ")[0]}
-  </span>
-
-  <ChevronDown size={14} className="ml-1 text-slate-400" />
-</button>
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                      </span>
+                      <span className="max-w-[80px] truncate tracking-tight">
+                        {session?.user?.name?.split(" ")[0] || "User"}
+                      </span>
+                      <ChevronDown size={14} className="ml-1 text-slate-400" />
+                    </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 mt-2 rounded-md bg-white z-[100]">
-                    <DropdownMenuLabel className="text-center border-b p-3">Hello, {session.user.name.split(" ")[0]}</DropdownMenuLabel>
+                  <DropdownMenuContent className="w-56 mt-2 rounded-md bg-white z-[100]" align="end">
+                    <DropdownMenuLabel className="text-center border-b p-3">
+                        Hello, {session?.user?.name?.split(" ")[0]}
+                    </DropdownMenuLabel>
+                    {session?.user?.role === "admin" && (
+                      <DropdownMenuItem className="p-3 cursor-pointer bg-primary/5 focus:bg-primary/10 transition-colors">
+                        <Link href="/admin/dashboard" className="flex items-center w-full font-bold text-primary">
+                          <LayoutDashboard className="mr-2 w-4 h-4" /> Admin Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+
                     <DropdownMenuItem className="p-3 cursor-pointer"><ShoppingBag className="mr-2 w-4 h-4" /> Order History</DropdownMenuItem>
                     <DropdownMenuItem className="p-3 cursor-pointer"><Heart className="mr-2 w-4 h-4" /> Wishlist</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => signOut()} className="p-3 cursor-pointer text-red-600 font-bold"><LogOut className="mr-2 w-4 h-4" /> Logout</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => signOut()} className="p-3 cursor-pointer text-red-600 font-bold">
+                        <LogOut className="mr-2 w-4 h-4" /> Logout
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
@@ -113,53 +119,64 @@ export default function Navbar() {
                 } />
               )}
             </div>
-
-            {/* --- MOBILE VIEW (আপনার এই অংশটি দরকার ছিল) --- */}
             <div className="md:hidden flex items-center gap-2">
-              {session ? (
- 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="p-1 outline-none">
-                      {session.user.image ? (
-                        <Image src={session.user.image} alt="User" width={24} height={24} className="rounded-full border border-white/50" />
-                      ) : (
+              {status !== "loading" && (
+                <>
+                  {session ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="p-1 outline-none">
+                          {session.user.image ? (
+                            <Image src={session.user.image} alt="User" width={24} height={24} className="rounded-full border border-white/50" />
+                          ) : (
+                            <User className="w-6 h-6" />
+                          )}
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-48 mt-2 mr-2 rounded-xl z-[100]" align="end">
+                        <DropdownMenuItem className="p-3 font-bold">{session?.user?.name}</DropdownMenuItem>
+                        {session?.user?.role === "admin" && (
+                          <DropdownMenuItem className="p-3 font-bold text-primary">
+                            <Link href="/admin/dashboard" className="flex items-center w-full">
+                              <LayoutDashboard className="mr-2 w-4 h-4" /> Dashboard
+                            </Link>
+                          </DropdownMenuItem>
+                        )}
+
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="p-3"><ShoppingBag className="mr-2 w-4 h-4" /> Orders</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => signOut()} className="p-3 text-red-600 font-bold"><LogOut className="mr-2 w-4 h-4" /> Logout</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : (
+                    <AuthModal trigger={
+                      <button className="p-1">
                         <User className="w-6 h-6" />
-                      )}
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-48 mt-2 mr-2 rounded-xl z-[100]">
-                    <DropdownMenuItem className="p-3 font-bold">{session.user.name}</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="p-3"><ShoppingBag className="mr-2 w-4 h-4" /> Orders</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => signOut()} className="p-3 text-red-600 font-bold"><LogOut className="mr-2 w-4 h-4" /> Logout</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <AuthModal trigger={
-                  <button className="p-1">
-                    <User className="w-6 h-6" />
-                  </button>
-                } />
+                      </button>
+                    } />
+                  )}
+                </>
               )}
+              
               <div className="relative">
                 <button onClick={() => setIsActionMenuOpen(!isActionMenuOpen)} className="p-1">
                   <MoreVertical className="w-6 h-6" />
                 </button>
                 {isActionMenuOpen && (
-                   <div className="absolute top-10 right-0 bg-white shadow-2xl rounded-lg py-2 w-44 text-dark border z-[100] animate-in fade-in zoom-in duration-200">
-                    <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 text-sm font-semibold border-b"><Truck className="w-4 h-4 text-primary" /> Track Order</button>
-                    <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 text-sm font-semibold"><Headset className="w-4 h-4 text-primary" /> Helpline</button>
-                   </div>
+                  <div className="absolute top-10 right-0 bg-white shadow-2xl rounded-lg py-2 w-44 text-dark border z-[100] animate-in fade-in zoom-in duration-200">
+                    <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 text-sm font-semibold border-b">
+                        <Truck className="w-4 h-4 text-primary" /> Track Order
+                    </button>
+                    <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 text-sm font-semibold">
+                        <Headset className="w-4 h-4 text-primary" /> Helpline
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
-
           </div>
         </div>
       </div>
-
-      {/* Secondary Navbar (Desktop Only) */}
       <div className="hidden md:block bg-white border-b py-2 px-4">
         <div className="max-w-[1400px] mx-auto flex items-center gap-10">
           <CategorySidebar />
